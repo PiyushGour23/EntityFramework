@@ -6,6 +6,6 @@ namespace Billboard.Models
     {
         public int Id { get; set; }
         public int companyId { get; set; }
-        public string CompanyName { get; set; } = null!;
+        public string CompanyName { get; set; } 
     }
 }

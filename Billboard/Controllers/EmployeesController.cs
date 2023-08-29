@@ -1,5 +1,6 @@
 ﻿using Billboard.Data;
 using Billboard.Models;
+using Billboard.Models.DTO;
 using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Office.CustomUI;
 using Microsoft.AspNetCore.Authorization;
@@ -33,13 +34,36 @@ namespace Billboard.Controllers
         }
 
         [HttpPost("Add")]
-        public async Task<IActionResult> AddUser(Employees employees)
+        public async Task<IActionResult> AddUser(EmployeesDto employeesDto)
         {
             try
             {
-                await _context.Employees.AddAsync(employees);
+                //Map DTO to Domain Model
+                var empdto = new Employees
+                {
+                    Title = employeesDto.Title,
+                    FirstName = employeesDto.FirstName,
+                    LastName = employeesDto.LastName,
+                    Gender = employeesDto.Gender,
+                    Email = employeesDto.Email,
+                    CompanyId = employeesDto.CompanyId,
+                };
+                await _context.Employees.AddAsync(empdto);
                 await _context.SaveChangesAsync();
-                return Ok(employees);
+
+                //Map DTO to Domain Model for angular application
+                var response = new EmployeeAngularDto
+                {
+                    Id = empdto.Id,
+                    Title = empdto.Title,
+                    FirstName = empdto.FirstName,
+                    LastName = empdto.LastName,
+                    Gender = empdto.Gender,
+                    Email = empdto.Email,
+                    CompanyId = empdto.CompanyId,
+                };
+
+                return Ok(response);
             }
             catch (Exception)
             {

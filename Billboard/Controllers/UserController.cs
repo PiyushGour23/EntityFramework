@@ -1,5 +1,6 @@
 ﻿using Billboard.Data;
 using Billboard.Models;
+using Billboard.Models.DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -49,14 +50,37 @@ namespace Billboard.Controllers
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddUser(User user)
+        [HttpPost("AddUser")]
+        public async Task<IActionResult> AddUser(AddUserDto addUserDto)
         {
             try
             {
-                await _context.User.AddAsync(user);
+                //Map DTO to Domain Model
+                var userdto = new User
+                {
+                    Name = addUserDto.Name,
+                    Email = addUserDto.Email,
+                    Password = addUserDto.Password,
+                    PhoneNumber = addUserDto.PhoneNumber,
+                    CreatedDate = addUserDto.CreatedDate,
+                };
+                await _context.User.AddAsync(userdto);
                 await _context.SaveChangesAsync();
-                return Ok(user);
+
+
+                //Map DTO to Domain Model for the angular application
+                var response = new UserAngularDto
+                {
+                    UserId = userdto.UserId,
+                    Name = userdto.Name,
+                    Email = userdto.Email,
+                    Password = userdto.Password,
+                    PhoneNumber = userdto.PhoneNumber,
+                    CreatedDate = userdto.CreatedDate,
+                };
+
+
+                return Ok(response);
             }
             catch (Exception)
             {

@@ -27,30 +27,29 @@ namespace Billboard.Container
             var builder = new BodyBuilder();
 
             byte[] filebytes;
-            if(System.IO.File.Exists("Attachments/Piyush_CV.pdf"))
+            if(System.IO.File.Exists("Attachments/Piyush_CV.pdf")) 
             {
                 FileStream file = new FileStream("Attachments/Piyush_CV.pdf", FileMode.Open, FileAccess.Read);
-                using(var sr = new MemoryStream())
+                using (var ms = new MemoryStream())
                 {
-                    file.CopyTo(sr);
-                    filebytes = sr.ToArray();
-
+                    file.CopyTo(ms);
+                    filebytes = ms.ToArray();
                 }
-                builder.Attachments.Add("attachment.pdf", filebytes, ContentType.Parse("application/octet-stream"));
+                builder.Attachments.Add("testing.pdf", filebytes, ContentType.Parse("application/octet-stream"));
             }
 
             byte[] filebyte;
             if (System.IO.File.Exists("Attachments/TCS_Cares.pdf"))
             {
                 FileStream file = new FileStream("Attachments/TCS_Cares.pdf", FileMode.Open, FileAccess.Read);
-                using (var sr = new MemoryStream())
+                using (var ms = new MemoryStream())
                 {
-                    file.CopyTo(sr);
-                    filebyte = sr.ToArray();
-
+                    file.CopyTo(ms);
+                    filebyte = ms.ToArray();
                 }
-                builder.Attachments.Add("attachment2.pdf", filebyte, ContentType.Parse("application/octet-stream"));
+                builder.Attachments.Add("testing1.pdf", filebyte, ContentType.Parse("application/octet-stream"));
             }
+
 
             builder.HtmlBody = mailRequest.Body;
             email.Body = builder.ToMessageBody();

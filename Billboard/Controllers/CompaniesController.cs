@@ -1,13 +1,14 @@
 ﻿using Billboard.Data;
 using Billboard.Models;
 using Billboard.Service;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Billboard.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CompaniesController : ControllerBase
@@ -29,47 +30,26 @@ namespace Billboard.Controllers
             return Ok(data);
         }
 
-        //[HttpPost("Add")]
+        [HttpGet("id")]
+        public async Task<IActionResult> GetId(int id)
+        {
+            var data = companyRepository.GetById(id);
+            return Ok(data);
 
-        //public IActionResult Add(Companies companies)
-        //{
-        //    var response = this.companyRepository.AddCompanies(companies);
+        }
 
-        //    return Ok(response);
-        //}
+        [HttpPost("Add")]
+        public async Task<IActionResult> Add(Companies companies)
+        {
+            await companyRepository.AddCompanies(companies);
+            return Ok();
+        }
 
-        //private readonly UserDbContext _context;
-        //public CompaniesController(UserDbContext context)  // this way we will get object of DbContext at runtime
-        //{
-        //    _context = context;
-        //}
-        //[HttpGet]
-        //public async Task<IEnumerable<Companies>> Get()
-        //{
-        //    try
-        //    {
-        //        return await _context.Companies.ToListAsync();
-        //    }
-        //    catch (Exception)
-        //    {
-        //        throw;
-        //    }
-        //}
-
-        //[HttpPost("Add")]
-        //public async Task<IActionResult> AddUser(Companies company)
-        //{
-        //    try
-        //    {
-        //        await _context.Companies.AddAsync(company);
-        //        await _context.SaveChangesAsync();
-        //        return Ok(company);
-        //    }
-        //    catch (Exception)
-        //    {
-
-        //        throw;
-        //    }
-        //}
+        [HttpDelete("Remove")]
+        public async Task<IActionResult> Remove(int id)
+        {
+            await companyRepository.DeleteCompanies(id);
+            return Ok();
+        }
     } 
 }
