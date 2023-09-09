@@ -1,6 +1,8 @@
 ﻿using Billboard.Data;
 using Billboard.Models;
+using Billboard.Models.DTO;
 using Billboard.Service;
+using DocumentFormat.OpenXml.InkML;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,22 +16,39 @@ namespace Billboard.Controllers
     public class CompaniesController : ControllerBase
     {
         private readonly ICompanyRepository companyRepository;
-        public CompaniesController(ICompanyRepository companyRepository)
+        private readonly UserDbContext _context;
+        public CompaniesController(ICompanyRepository companyRepository, UserDbContext context)
         {
             this.companyRepository = companyRepository;
+            _context = context;
         }
 
+
+
+        //https://localhost:44362/api/Companies
         [HttpGet]
-        public  IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var data = companyRepository.GetCompanies();
+            var data = await companyRepository.GetCompanies();
             if (data == null)
             {
                 return NotFound();
             }
-            return Ok(data);
+            //Map Domain Model to DTO
+            var resposne = new List<CompaniesAngularDto>();
+            foreach (var company in data)
+            {
+                resposne.Add(new CompaniesAngularDto
+                {
+                    Id = company.Id,
+                    companyId = company.companyId,
+                    CompanyName = company.CompanyName
+                });
+            }
+            return Ok(resposne);
         }
 
+        
         [HttpGet("id")]
         public async Task<IActionResult> GetId(int id)
         {
@@ -39,10 +58,39 @@ namespace Billboard.Controllers
         }
 
         [HttpPost("Add")]
-        public async Task<IActionResult> Add(Companies companies)
+        public async Task<IActionResult> Add(CompaniesDto companiesDto)
         {
-            await companyRepository.AddCompanies(companies);
-            return Ok();
+
+            try
+            {
+                //Map DTO to Domain Model
+                var companiesdto = new Companies
+                {
+                    companyId = companiesDto.companyId,
+                    CompanyName = companiesDto.CompanyName,
+                };
+                await _context.Companies.AddAsync(companiesdto);
+                await _context.SaveChangesAsync();
+
+
+                //Map DTO to Domain Model for the angular application
+                var response = new CompaniesAngularDto
+                {
+                    Id = companiesdto.Id,
+                    companyId = companiesdto.companyId,
+                    CompanyName = companiesdto.CompanyName,
+                };
+
+
+                return Ok(response);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            //await companyRepository.AddCompanies(companies);
+            //return Ok();
         }
 
         [HttpDelete("Remove")]

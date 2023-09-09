@@ -15,9 +15,9 @@ namespace Billboard.Container
         { 
             this.userDbContext = userDbContext;
         }
-        public List<Companies> GetCompanies()
+        public async Task <IEnumerable<Companies>> GetCompanies()
         {
-            return this.userDbContext.Companies.ToList();
+            return await this.userDbContext.Companies.ToListAsync();
         }
 
         public List<Companies> GetById(int id)
