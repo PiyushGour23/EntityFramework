@@ -1,3 +1,5 @@
+using AutoMapper;
+using Billboard;
 using Billboard.Container;
 using Billboard.Data;
 using Billboard.Helper;
@@ -22,6 +24,9 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddTransient<ICompanyRepository, CompanyRepository>();
 builder.Services.AddTransient<IEmailService, EmailService>();
+var automapper = new MapperConfiguration(item => item.AddProfile(new AutoMapperHandler()));
+IMapper mapper = automapper.CreateMapper();
+builder.Services.AddSingleton(mapper);
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddDbContext<UserDbContext>(
     o => o.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));                       // to configure the option in DbContext that's why we declare the DbContext options in constructor

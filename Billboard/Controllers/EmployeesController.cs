@@ -10,7 +10,7 @@ using System.Data;
 
 namespace Billboard.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class EmployeesController : ControllerBase

@@ -1,4 +1,5 @@
-﻿using Billboard.Data;
+﻿using AutoMapper;
+using Billboard.Data;
 using Billboard.Models;
 using Billboard.Service;
 using DocumentFormat.OpenXml.Drawing.Diagrams;
@@ -18,13 +19,35 @@ namespace Billboard.Container
         public async Task <IEnumerable<Companies>> GetCompanies()
         {
             return await this.userDbContext.Companies.ToListAsync();
+            //var records = await this.userDbContext.Companies.Select(x => new Companies()  -- For learning purpose
+            //{
+            //    Id = x.Id,
+            //    companyId = x.companyId,
+            //    CompanyName = x.CompanyName,
+            //}).ToListAsync();
+            //return records;
         }
 
-        public List<Companies> GetById(int id)
+        public async Task <List<Companies>> GetById(int id)
         {
-            userDbContext.Companies.FindAsync(id);
-            return userDbContext.Companies.ToList();
-            
+            //userDbContext.Companies.FindAsync(id);
+            //return userDbContext.Companies.ToList();
+            try
+            {
+                var records = await this.userDbContext.Companies.Where(x => x.Id == id).Select(x => new Companies()
+                {
+                    Id = x.Id,
+                    companyId = x.companyId,
+                    CompanyName = x.CompanyName
+                }).ToListAsync();
+                return records;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+
         }
         public async Task<Companies> AddCompanies(Companies companies)
         {

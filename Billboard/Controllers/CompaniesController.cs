@@ -1,4 +1,5 @@
-﻿using Billboard.Data;
+﻿using AutoMapper;
+using Billboard.Data;
 using Billboard.Models;
 using Billboard.Models.DTO;
 using Billboard.Service;
@@ -7,6 +8,8 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Billboard.Controllers
 {
@@ -17,10 +20,12 @@ namespace Billboard.Controllers
     {
         private readonly ICompanyRepository companyRepository;
         private readonly UserDbContext _context;
-        public CompaniesController(ICompanyRepository companyRepository, UserDbContext context)
+        private readonly IMapper _mapper;
+        public CompaniesController(ICompanyRepository companyRepository, UserDbContext context, IMapper mapper)
         {
             this.companyRepository = companyRepository;
             _context = context;
+            _mapper = mapper;
         }
 
 
@@ -34,6 +39,7 @@ namespace Billboard.Controllers
             {
                 return NotFound();
             }
+
             //Map Domain Model to DTO
             var resposne = new List<CompaniesAngularDto>();
             foreach (var company in data)
@@ -46,13 +52,14 @@ namespace Billboard.Controllers
                 });
             }
             return Ok(resposne);
+            //return _mapper.Map<List<CompaniesDto>>(data);
         }
 
         
         [HttpGet("id")]
         public async Task<IActionResult> GetId(int id)
         {
-            var data = companyRepository.GetById(id);
+            var data = await companyRepository.GetById(id);
             return Ok(data);
 
         }
