@@ -4,6 +4,7 @@ using Billboard.Models;
 using Billboard.Service;
 using DocumentFormat.OpenXml.Drawing.Diagrams;
 using DocumentFormat.OpenXml.InkML;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -46,9 +47,26 @@ namespace Billboard.Container
             {
                 throw ex;
             }
-
-
         }
+
+        public async Task<List<Companies>> GetByCompanyId(int companyId)
+        {
+            try
+            {
+                var records = await this.userDbContext.Companies.Where(x => x.companyId == companyId).Select(x => new Companies()
+                {
+                    Id = x.Id,
+                    companyId = x.companyId,
+                    CompanyName = x.CompanyName
+                }).ToListAsync();
+                return records;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public async Task<Companies> AddCompanies(Companies companies)
         {
             await userDbContext.Companies.AddAsync(companies);

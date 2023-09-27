@@ -64,6 +64,21 @@ namespace Billboard.Controllers
 
         }
 
+        [HttpGet("companyId")]
+        public async Task<IActionResult> GetById(int companyId)
+        {
+            try
+            {
+                var data = await companyRepository.GetByCompanyId(companyId);
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
         [HttpPost("Add")]
         public async Task<IActionResult> Add(CompaniesDto companiesDto)
         {
