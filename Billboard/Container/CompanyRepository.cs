@@ -74,6 +74,19 @@ namespace Billboard.Container
             return companies;
         }
 
+
+        public async Task<Companies> UpdateAsync(int id, Companies companies)
+        {
+            var existingcompany = await userDbContext.Companies.FirstOrDefaultAsync(x => x.Id == companies.Id);
+            if (existingcompany != null)
+            {
+                userDbContext.Entry(existingcompany).CurrentValues.SetValues(companies);
+                await userDbContext.SaveChangesAsync();
+                return companies;
+            }
+            return null;
+        }
+
         public async Task<string> DeleteCompanies(int id)
         {
             var userid = await userDbContext.Companies.FindAsync(id);

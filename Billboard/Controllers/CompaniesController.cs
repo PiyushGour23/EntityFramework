@@ -115,6 +115,45 @@ namespace Billboard.Controllers
             //return Ok();
         }
 
+
+        [HttpPut("Update")]
+        public async Task<IActionResult> UpdateCompanies(int id, CompaniesDto companiesDto)
+        {
+
+            try
+            {
+                //Map DTO to Domain Model
+                var company = new Companies
+                {
+                    Id = id,
+                    companyId = companiesDto.companyId,
+                    CompanyName = companiesDto.CompanyName,
+                };
+                var data = await companyRepository.UpdateAsync(id,company);
+                if(data == null)
+                {
+                    return NotFound();
+                }
+
+                //Map DTO to Domain Model for the angular application
+                var response = new CompaniesAngularDto
+                {
+                    Id = company.Id,
+                    companyId = company.companyId,
+                    CompanyName = company.CompanyName
+                };
+
+
+                return Ok(response);
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
         [HttpDelete("Remove")]
         public async Task<IActionResult> Remove(int id)
         {
