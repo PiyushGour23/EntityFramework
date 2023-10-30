@@ -16,6 +16,7 @@ namespace Billboard.Data
         public DbSet<Employees> Employees { get; set; }
         public DbSet<Companies> Companies { get; set; }
         public DbSet<usercred> usercred { get; set; }
+        public DbSet<Blogpost> blogpost { get; set; }
     }
 
 }

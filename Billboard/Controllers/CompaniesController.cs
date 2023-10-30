@@ -91,9 +91,7 @@ namespace Billboard.Controllers
                     companyId = companiesDto.companyId,
                     CompanyName = companiesDto.CompanyName,
                 };
-                await _context.Companies.AddAsync(companiesdto);
-                await _context.SaveChangesAsync();
-
+                var data = await companyRepository.AddCompanies(companiesdto);
 
                 //Map DTO to Domain Model for the angular application
                 var response = new CompaniesAngularDto
